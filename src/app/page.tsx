@@ -1,113 +1,559 @@
-import Image from 'next/image'
+"use client";
+
+import Image from "next/image";
+import ReactPlayer from "react-player";
+import { dancingScript, sansSerif } from "./font";
+import { cn } from "./utils";
+import Typewriter from "typewriter-effect";
+import Image1 from "../../public/0_1.jpg";
+import Image2 from "../../public/2.gif";
+import ImageCol1 from "../../public/col_1.jpg";
+import ImageCol1_1 from "../../public/col_1_1.jpg";
+import ImageCol1_2 from "../../public/col_1_2.jpg";
+import ImageCol1_3 from "../../public/col_1_3.jpg";
+import ImageCol2 from "../../public/col_2.jpg";
+import ImageCol2_1 from "../../public/col_2_1.jpg";
+import ImageCol2_2 from "../../public/col_2_2.jpg";
+import ImageCol2_3 from "../../public/col_2_3.jpg";
+import ImageCol3 from "../../public/col_3.jpg";
+import ImageCol3_1 from "../../public/col_3_1.jpg";
+import ImageCol3_2 from "../../public/col_3_2.jpg";
+import ImageCol3_3 from "../../public/col_3_3.jpg";
+import ImageCol4 from "../../public/col_4.jpg";
+import ImageCol4_1 from "../../public/col_4_1.jpg";
+import ImageCol4_2 from "../../public/col_4_2.jpg";
+import ImageCol4_3 from "../../public/col_4_3.jpg";
+import ImageCol5 from "../../public/col_5.jpg";
+import ImageCol5_1 from "../../public/col_5_1.jpg";
+import ImageCol5_2 from "../../public/col_5_2.jpg";
+import ImageCol5_3 from "../../public/col_5_3.jpg";
+import ImageCol6 from "../../public/col_6.jpg";
+import ImageCol6_1 from "../../public/col_6_1.jpg";
+import ImageCol6_2 from "../../public/col_6_2.jpg";
+import ImageCol6_3 from "../../public/col_6_4.jpg";
+import Gery from "../../public/gery.jpg";
+import Mahita from "../../public/mahita.jpg";
+import Separator from "../../public/separator_1.png";
+import { Toaster } from "react-hot-toast";
+import Submission from "./submission";
+import { notFound, useParams } from "next/navigation";
+import AnimateOnScroll from "./animate";
+import { useEffect, useState } from "react";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 export default function Home() {
+  const { id } = useParams();
+  const [isLoadingVideo, setIsLoadingVideo] = useState(true);
+  const [videoWidth, setVideoWidth] = useState(0);
+  const [videoHeight, setVideoHeight] = useState(0);
+  const [name, setName] = useState<string | null | undefined>(undefined);
+  const [image, setImage] = useState<StaticImport | null>(null);
+
+  useEffect(() => {
+    const width = window.innerWidth <= 450 ? window.innerWidth : 450;
+    setVideoWidth(width);
+    setVideoHeight((width / 1280) * 720);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/" + id)
+      .then((response) => response.json())
+      .then((data) => setName(data.name));
+  }, [id]);
+
+  if (!videoWidth) return null;
+
+  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+  const start = new Date();
+  const end = new Date("2023-12-16");
+
+  const days = Math.round(Math.abs((start.getTime() - end.getTime()) / oneDay));
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      {isLoadingVideo && <p>Loading...</p>}
+      <main
+        className={cn(
+          "flex min-h-screen flex-col items-center justify-start bg-white max-w-[450px] relative",
+          isLoadingVideo ? "hidden" : "visible"
+        )}
+      >
+        {image && (
+          <ImagePreview
+            src={image}
+            width={videoWidth}
+            onClose={() => setImage(null)}
+          />
+        )}
+        <Toaster />
+        <div className="relative">
+          <ReactPlayer
+            url={"/hero.mp4"}
+            controls={false}
+            width={videoWidth}
+            height={videoHeight}
+            playing
+            muted
+            loop
+            playsinline={true}
+            onReady={() => setIsLoadingVideo(false)}
+          />
+          <div
+            style={{
+              height: videoHeight,
+            }}
+            className="flex flex-col items-center justify-center absolute top-0 text-white w-full z-10"
           >
-            By{' '}
+            <p className={cn(dancingScript.className)}>The Wedding Party of</p>
+            <p className={cn(dancingScript.className, "text-4xl")}>
+              Gery & Mahita
+            </p>
+            <p className="text-sm">16.12.2023</p>
+          </div>
+        </div>
+        <AnimateOnScroll>
+          <div className="flex items-center justify-center pt-2">
+            <Image src={Separator} height={75} alt="separator" />
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="flex flex-col items-center justify-center p-4 py-5 pt-3 space-y-4">
+            <p className="text-center text-4xl text-black">
+              <Typewriter
+                options={{
+                  deleteSpeed: 1000000,
+                  strings: [`Hi...`],
+                  autoStart: true,
+                  loop: true,
+                }}
+              />
+            </p>
+            <p className="text-center leading-5 text-black">
+              We are thrilled to invite you to join us for a joyous celebration
+              as we unite in marriage. Your presence would mean the world to us
+              as we embark on this beautiful journey together.
+            </p>
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="flex flex-row space-x-4 items-center">
             <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+              src={Gery}
+              width={videoWidth / 2}
+              alt="Picture of the author"
             />
-          </a>
+            <div className="flex flex-col space-y-2">
+              <p className="text-2xl text-gray-700">Putu Gery Wahyu Nugraha</p>
+              <div className="border-t border-black font-light text-gray-700">
+                son of
+              </div>
+              <p className="text-black">
+                Putu Suadnyana &<br />
+                Putu Yeni Widiadnyani
+              </p>
+            </div>
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="flex flex-row space-x-4 items-center">
+            <div className="flex flex-col space-y-2">
+              <p className="text-2xl text-end text-black">
+                Ni Luh Mahita Eka Riadi
+              </p>
+              <div className="border-t border-black font-light text-gray-700 text-end">
+                daughter of
+              </div>
+              <p className="text-end text-black">
+                Nyoman Triyasa &<br />
+                Ni Wayan Resiadi
+              </p>
+            </div>
+            <Image
+              src={Mahita}
+              width={videoWidth / 2}
+              alt="Picture of the author"
+            />
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="flex items-center justify-center py-5 relative w-full">
+            <Image src={Separator} height={75} alt="separator" />
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="relative">
+            <div
+              className={cn(
+                dancingScript.className,
+                "text-2xl absolute h-full w-full flex items-center justify-center bg-black bg-opacity-50 z-50"
+              )}
+            >
+              <p className="text-white text-4xl">Event Details</p>
+            </div>
+            <Image src={Image1} alt="Picture of the author" />
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="relative flex items-center justify-center py-5 flex-col w-full">
+            <div
+              style={{
+                backgroundImage: "url(./bg.png)",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                opacity: 0.2,
+              }}
+              className="absolute h-full w-full"
+            ></div>
+            <p className="text-center text-black px-4">
+              Join us for the celebration at
+              <br />
+              <span className="font-bold text-gray-700">
+                Warung di Kebun, Denpasar City
+              </span>
+              <br />
+              — on — <br />{" "}
+              <span className="font-bold text-gray-700">
+                16th of December 2023
+              </span>{" "}
+              <br />{" "}
+              <span className="font-bold text-gray-700">
+                17.00-20.00 Bali Time
+              </span>
+              <br />
+              <br />
+            </p>
+            <div className="relative h-[200px] w-full">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.2792415061267!2d115.23871231178799!3d-8.664971488150677!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd240613bbb02bb%3A0x26437fa8b7acd924!2sWarung%20Di%20Kebun!5e0!3m2!1sen!2sid!4v1700584477176!5m2!1sen!2sid"
+                width="450"
+                height="200"
+                style={{
+                  border: 0,
+                  zIndex: 1000,
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                }}
+                loading="lazy"
+              ></iframe>
+            </div>
+            <div className="flex items-center justify-center py-5 relative w-full">
+              <Image src={Separator} height={75} alt="separator" />
+            </div>
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="relative">
+            <div
+              className={cn(
+                dancingScript.className,
+                "flex flex-row text-2xl absolute h-full w-full items-center justify-end bg-black bg-opacity-20 z-50 pr-[10%]"
+              )}
+            >
+              <p
+                className={cn(
+                  dancingScript.className,
+                  "text-white text-5xl text-end leading-9 opacity-90"
+                )}
+              >
+                Will we <br /> see you in <br /> {days} days?
+              </p>
+            </div>
+            <Image src={Image2} alt="Picture of the author" />
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="px-4 pt-5 pb-0 space-y-4">
+            <p className="text-center leading-5 text-black">
+              For the convenience of our event, please confirm your attendance
+              by December 7th
+            </p>
+            <Submission />
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="p-4 pb-5 pt-5">
+            <div className="flex items-center justify-center pt-2">
+              <Image src={Separator} height={75} alt="separator" />
+            </div>
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <div className="p-4 pb-5 pt-0">
+            <p
+              className={cn(
+                dancingScript.className,
+                "text-center text-5xl text-black"
+              )}
+            >
+              Our Memories
+            </p>
+          </div>
+          <div className="px-8 pb-5">
+            <p className="text-center text-black">
+              In the meantime, here are some of our loveliest moment together...
+            </p>
+          </div>
+        </AnimateOnScroll>
+        <AnimateOnScroll>
+          <Image
+            src={ImageCol1}
+            width={videoWidth}
+            onClick={() => setImage(ImageCol1)}
+            alt="separator"
+            placeholder="blur"
+          />
+        </AnimateOnScroll>
+        <div className="flex flex-row">
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol1_1)}
+              src={ImageCol1_1}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol1_2)}
+              src={ImageCol1_2}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol1_3)}
+              src={ImageCol1_3}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+        </div>
+        <AnimateOnScroll>
+          <Image
+            src={ImageCol5}
+            onClick={() => setImage(ImageCol5)}
+            width={videoWidth}
+            alt="separator"
+            placeholder="blur"
+          />
+        </AnimateOnScroll>
+        <div className="flex flex-row">
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol5_1)}
+              src={ImageCol5_1}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol5_2)}
+              src={ImageCol5_2}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol5_3)}
+              src={ImageCol5_3}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+        </div>
+        <AnimateOnScroll>
+          <Image
+            src={ImageCol6}
+            onClick={() => setImage(ImageCol6)}
+            width={videoWidth}
+            alt="separator"
+            placeholder="blur"
+          />
+        </AnimateOnScroll>
+        <div className="flex flex-row">
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol6_1)}
+              src={ImageCol6_1}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol6_2)}
+              src={ImageCol6_2}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol6_3)}
+              src={ImageCol6_3}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+        </div>
+        <AnimateOnScroll>
+          <Image
+            src={ImageCol2}
+            onClick={() => setImage(ImageCol2)}
+            width={videoWidth}
+            alt="separator"
+            placeholder="blur"
+          />
+        </AnimateOnScroll>
+        <div className="flex flex-row">
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol2_1)}
+              src={ImageCol2_1}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol2_2)}
+              src={ImageCol2_2}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol2_3)}
+              src={ImageCol2_3}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+        </div>
+        <AnimateOnScroll>
+          <Image
+            src={ImageCol3}
+            onClick={() => setImage(ImageCol3)}
+            width={videoWidth}
+            alt="separator"
+            placeholder="blur"
+          />
+        </AnimateOnScroll>
+        <div className="flex flex-row">
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol3_1)}
+              src={ImageCol3_1}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol3_2)}
+              src={ImageCol3_2}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol3_3)}
+              src={ImageCol3_3}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+        </div>
+        <AnimateOnScroll>
+          <Image
+            src={ImageCol4}
+            onClick={() => setImage(ImageCol4)}
+            width={videoWidth}
+            alt="separator"
+            placeholder="blur"
+          />
+        </AnimateOnScroll>
+        <div className="flex flex-row">
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol4_1)}
+              src={ImageCol4_1}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol4_2)}
+              src={ImageCol4_2}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Image
+              onClick={() => setImage(ImageCol4_3)}
+              src={ImageCol4_3}
+              width={videoWidth / 3}
+              placeholder="blur"
+              alt="separator"
+            />
+          </AnimateOnScroll>
+        </div>
+
+        <p className={cn(dancingScript.className, "py-5 text-black")}>
+          Made with love, by Gery & Mahita
+        </p>
+      </main>
+    </>
+  );
+}
+
+function ImagePreview(props: {
+  src: StaticImport;
+  width: number;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed top-0 h-screen w-screen flex items-center justify-center z-50"
+      onClick={props.onClose}
+    >
+      <div className="w-[450px] z-100 h-full">
+        <div className="w-full h-full p-4 z-100 items-center justify-center flex bg-black bg-opacity-50">
+          <div className="drop-shadow-md">
+            <Image
+              src={props.src}
+              width={props.width - 40}
+              alt="separator"
+              placeholder="blur"
+            />
+          </div>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }
